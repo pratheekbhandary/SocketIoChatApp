@@ -11,6 +11,12 @@ function listen() {
   
   app.use(express.static('public'));
 
+  app.get('/prat',(req,res)=>{
+    res.send({hi:'there'})
+  });
+
+
+
   var io = require('socket.io')(server);
   
 io.sockets.on('connection',
