@@ -1,14 +1,15 @@
 const constants=require('./CONSTANTS');
+const Conversation=require('./conversation');
 
-function Person(name){
+function Person({client}){
     this.name=name;
-    this.id=Person.IdGenerator++;
+    this.id=client.id;
     this.friends=[];// list of Ids
     this.status=constants.STATUS_OFFLINE;
+    this.conversation=[];
     Person.Everyone.push(this);
 }
 
-Person.IdGenerator=0;
 Person.Everyone=[];
 Person.GetEveryOne=()=>Person.Everyone;
 Person.GetPeopleOnline=()=>Person.Everyone.filter(person=>person.status===constants.STATUS_ONLINE);
@@ -23,13 +24,18 @@ Person.prototype.isAlreadyFriend=function(id){
 Person.prototype.addFriendsById= function(friendIds){
     if(Array.isArray(friendIds)){
         const validFriendIds=friendIds.filter(friendId=>{
+            const conv=new Conversation(friendId);
+            this.conversation.push(conv);
             return isValidId(friendId) && this.id!==friendId && !this.isAlreadyFriend(friendId)
         });
         validFriendIds && this.friends.push(...validFriendIds);
     }
-    else{
+    else {
         isValidId(friendIds) && this.id!==friendIds && !this.isAlreadyFriend(friendIds) && this.friends.push(friendIds);
+        const conv=new Conversation(friendIds);
+        this.conversation.push(conv);
     }
+    
 }
 
 Person.prototype.toggleStatus= function(){
@@ -45,3 +51,5 @@ Person.prototype.toggleStatus= function(){
         default: console.trace("Something wrong in toggleStatus");
     }
 }
+
+module.exports = Person;

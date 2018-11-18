@@ -1,30 +1,43 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import PropTypes from 'prop-types';
+
 import './App.css';
+import TopNavBar from './components/TopNavBar';
+import FriendList from './components/FriendList';
+import ChatPortal from './components/ChatPortal';
+import AvailableFreiendsModal from './components/AvailableFreiendsModal';
 
 class App extends Component {
+  constructor(){
+    super();
+    this.selectUser=this.selectUser.bind(this);
+    this.state={
+      user:undefined,
+    }
+  }
 
+  selectUser(user){
+    this.setState({user})
+  }
 
-  render() {
-    return (
+  
+
+  render(){
+    return(
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a className="App-link"
-            onClick={async()=>{
-              let x=await fetch("/prat");
-              console.log(await x.json())
-            }}
-          >
-            prat
-          </a>
-        </header>
+      {!this.state.user && <AvailableFreiendsModal/>}
+        <TopNavBar/>
+        <div className="leftMenu" id="style-1">
+          <FriendList/>
+        </div>
+        <ChatPortal/>
       </div>
-    );
+    )
   }
 }
+
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 export default App;
